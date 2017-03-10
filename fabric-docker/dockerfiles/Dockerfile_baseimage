@@ -1,0 +1,5 @@
+FROM hyperledger/fabric-baseimage:x86_64-0.2.1
+WORKDIR $GOPATH
+VOLUME ["/mysrc"]
+ADD github.com.tar $GOPATH/src/
+#RUN go install build-chaincode && cp src/build-chaincode/vendor/github.com/hyperledger/fabric/peer/core.yaml $GOPATH/bin && mv $GOPATH/bin/build-chaincode $GOPATH/bin/5c0e7241354a22bca08f23fa8058ccd7148e03efe562971e2e977fc4003107fd

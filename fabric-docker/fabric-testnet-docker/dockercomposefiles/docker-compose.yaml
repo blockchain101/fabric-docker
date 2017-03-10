@@ -1,0 +1,106 @@
+mymembersrvc:
+  extends:
+    file: membersrvc.yaml
+    service: membersrvc
+  container_name: mymembersrvc 
+  hostname: mymembersrvc
+vp0:
+  extends:
+    file: vp-pbft.yaml
+    service: vp-pbft
+  container_name: vp0
+  hostname: vp0
+  environment:
+    - CORE_LOGGING_LEVEL=INFO
+    - CORE_PEER_ID=vp0
+    - CORE_PEER_PKI_ECA_PADDR=mymembersrvc:7054
+    - CORE_PEER_PKI_TCA_PADDR=mymembersrvc:7054
+    - CORE_PEER_PKI_TLSCA_PADDR=mymembersrvc:7054
+    - CORE_SECURITY_ENROLLID=test_vp0
+    - CORE_SECURITY_ENROLLSECRET=MwYpmSRjupbT
+  links:
+    - mymembersrvc
+vp1:
+  extends:
+    file: vp-pbft.yaml
+    service: vp-pbft
+  container_name: vp1
+  hostname: vp1
+  environment:
+    - CORE_LOGGING_LEVEL=INFO
+    - CORE_PEER_ID=vp1
+    - CORE_PEER_PKI_ECA_PADDR=mymembersrvc:7054
+    - CORE_PEER_PKI_TCA_PADDR=mymembersrvc:7054
+    - CORE_PEER_PKI_TLSCA_PADDR=mymembersrvc:7054
+    - CORE_SECURITY_ENROLLID=test_vp1
+    - CORE_SECURITY_ENROLLSECRET=5wgHK9qqYaPy
+    - CORE_PEER_DISCOVERY_ROOTNODE=vp0:7051
+  links:
+    - mymembersrvc
+    - vp0
+vp2:
+  extends:
+    file: vp-pbft.yaml
+    service: vp-pbft
+  container_name: vp2
+  hostname: vp2
+  environment:
+    - CORE_LOGGING_LEVEL=INFO
+    - CORE_PEER_ID=vp2
+    - CORE_PEER_PKI_ECA_PADDR=mymembersrvc:7054
+    - CORE_PEER_PKI_TCA_PADDR=mymembersrvc:7054
+    - CORE_PEER_PKI_TLSCA_PADDR=mymembersrvc:7054
+    - CORE_SECURITY_ENROLLID=test_vp2
+    - CORE_SECURITY_ENROLLSECRET=vQelbRvja7cJ
+    - CORE_PEER_DISCOVERY_ROOTNODE=vp0:7051
+  links:
+    - mymembersrvc
+    - vp0
+vp3:
+  extends:
+    file: vp-pbft.yaml
+    service: vp-pbft
+  container_name: vp3
+  hostname: vp3
+  environment:
+    - CORE_LOGGING_LEVEL=INFO
+    - CORE_PEER_ID=vp3
+    - CORE_PEER_PKI_ECA_PADDR=mymembersrvc:7054
+    - CORE_PEER_PKI_TCA_PADDR=mymembersrvc:7054
+    - CORE_PEER_PKI_TLSCA_PADDR=mymembersrvc:7054
+    - CORE_SECURITY_ENROLLID=test_vp3
+    - CORE_SECURITY_ENROLLSECRET=9LKqKH5peurL
+    - CORE_PEER_DISCOVERY_ROOTNODE=vp0:7051
+  links:
+    - mymembersrvc
+    - vp0
+
+
+myhfc:
+  extends:
+    file: hfc-pbft.yaml
+    service: hfc-pbft
+  container_name: myhfc
+  hostname: myhfc
+  environment:
+    - MEMBERSRVC_ADDRESS=mymembersrvc:7054
+    - PEER_ADDRESS=vp0:7051
+    - USER_NAME=lukas
+    - USER_PASSWORD=NPKYL39uKbkj
+  links:
+    - mymembersrvc
+    - vp0
+myhfc3:
+  extends:
+    file: hfc-pbft.yaml
+    service: hfc-pbft
+  container_name: myhfc3
+  hostname: myhfc3
+  environment:
+    - MEMBERSRVC_ADDRESS=mymembersrvc:7054
+    - PEER_ADDRESS=vp3:7051
+    - USER_NAME=diego
+    - USER_PASSWORD=DRJ23pEQl16a
+  links:
+    - mymembersrvc
+    - vp3

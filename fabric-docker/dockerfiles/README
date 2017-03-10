@@ -1,0 +1,5 @@
+docker build -f Dockerfile_hfc -t blockchain101/fabric-hfc:0.6.1 .
+docker build -f Dockerfile_baseimage -t hyperledger/fabric-baseimage:latest .
+
+docker build -f Dockerfile_peer -t blockchain101/fabric-peer:0.6.1 .
+docker build -f Dockerfile_membersrvc -t blockchain101/fabric-membersrvc:0.6.1 .

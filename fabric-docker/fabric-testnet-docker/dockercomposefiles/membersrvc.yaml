@@ -1,0 +1,5 @@
+membersrvc:
+  image: blockchain101/fabric-membersrvc:0.6.1
+  ports:
+    - "7054:7054"
+  command: membersrvc

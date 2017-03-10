@@ -1,0 +1,3 @@
+FROM hyperledger/fabric-peer:x86_64-0.6.1-preview
+WORKDIR $GOPATH/src/github.com/hyperledger/fabric/examples/chaincode/go/chaincode_example02 
+RUN  go build && cd $GOPATH/src/github.com/hyperledger/fabric/examples/sdk/node && npm install hfc

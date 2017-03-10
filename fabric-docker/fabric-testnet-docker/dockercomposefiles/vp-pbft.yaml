@@ -1,0 +1,34 @@
+vp-pbft:
+  image: blockchain101/fabric-peer:0.6.1
+  environment:
+    - CORE_SECURITY_ENABLED=true
+    - CORE_PEER_ADDRESSAUTODETECT=true
+    - CORE_VM_ENDPOINT=http://172.17.0.1:2375
+    - CORE_LOGGING_LEVEL=DEBUG
+    - CORE_PEER_VALIDATOR_CONSENSUS_PLUGIN=pbft
+    - CORE_PBFT_GENERAL_MODE=batch
+    - CORE_PBFT_GENERAL_N=4
+
+    # How many requests should the primary send per pre-prepare when in "batch" mode
+    - CORE_PBFT_GENERAL_BATCHSIZE=500
+
+    # Send a pre-prepare if there are pending requests, batchsize isn't reached yet,
+    # and this much time has elapsed since the current batch was formed
+    - CORE_PBFT_GENERAL_TIMEOUT_BATCH=1s
+
+    # How long may a request take between reception and execution, must be greater than the batch timeout
+    - CORE_PBFT_GENERAL_TIMEOUT_REQUEST=2s 
+
+    # How long may a view change take
+    - CORE_PBFT_GENERAL_TIMEOUT_VIEWCHANGE=5s
+
+    # How long to wait for a view change quorum before resending (the same) view change
+    - CORE_PBFT_GENERAL_TIMEOUT_RESENDVIEWCHANGE=2s
+
+    # Interval to send "keep-alive" null requests.  Set to 0 to disable. If enabled, must be greater than request timeout
+    - CORE_PBFT_GENERAL_TIMEOUT_NULLREQUEST=0s
+
+    # How long may a message broadcast take.
+    - CORE_PBFT_GENERAL_TIMEOUT_BROADCAST=1s
+ 
+  command: sh -c "sleep 8; peer node start"
