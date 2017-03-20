@@ -1,7 +1,7 @@
 hfc-pbft:
   image: blockchain101/fabric-hfc:0.6.1
   volumes:
-    - ~/hfc:/hfc
+    - ../hfc:/hfc
   environment:
     - KEY_VALUE_STORE=/tmp/hl_sdk_node_key_value_store
     # set to following to 'dev' if peer running in Developer mode

@@ -32,7 +32,7 @@ fabric-dev-client:
   image: blockchain101/fabric-hfc:0.6.1
   volumes:
     # tweak this to map a local developmnt directory tree into the container
-    - ~/hfc:/hfc
+    - ../hfc:/hfc
   environment:
     - MEMBERSRVC_ADDRESS=fabric-dev-membersrvc:7054
     - PEER_ADDRESS=fabric-dev-peer:7051
