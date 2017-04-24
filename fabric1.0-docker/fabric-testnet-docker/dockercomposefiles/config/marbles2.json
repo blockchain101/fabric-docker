@@ -1,0 +1,9 @@
+{
+    "cred_filename": "blockchain_creds2.json",
+    "use_events": true,
+    "keep_alive_secs": 120,
+    "company": "eMarbles",
+    "usernames": [],
+    "port": 3002,
+    "last_startup_hash": "e7af7354f2c2acdeca0ae4bd5f95fb6a79d8ab48"
+}

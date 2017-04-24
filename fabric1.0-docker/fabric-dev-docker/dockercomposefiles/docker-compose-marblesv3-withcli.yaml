@@ -1,0 +1,95 @@
+version: '2'
+
+services:
+  fabric-dev-orderer:
+    container_name: fabric-dev-orderer
+    image: blockchain101/fabric-orderer:1.0
+    environment:
+      - GRPC_TRACE=all
+      - GRPC_VERBOSITY=debug
+      - ORDERER_GENERAL_LOGLEVEL=INFO
+      - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
+      - ORDERER_GENERAL_GENESISMETHOD=file
+      - ORDERER_GENERAL_GENESISFILE=/etc/hyperledger/configtx/orderer-SampleSingleMSPSolo.block
+      - ORDERER_GENERAL_LOCALMSPID=DEFAULT
+      - ORDERER_GENERAL_LOCALMSPDIR=/etc/hyperledger/msp/orderer
+      - ORDERER_GENERAL_TLS_ENABLED=false
+      - ORDERER_GENERAL_TLS_PRIVATEKEY=/etc/hyperledger/msp/orderer/keystore/key.pem
+      - ORDERER_GENERAL_TLS_CERTIFICATE=/etc/hyperledger/msp/orderer/signcerts/peer.pem
+      - ORDERER_GENERAL_TLS_ROOTCAS=[/etc/hyperledger/msp/orderer/cacerts/ca-cert.pem]
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/orderer
+    command: orderer
+    ports:
+      - 7050:7050
+    volumes:
+        - ./channel:/etc/hyperledger/configtx
+        - ./channel/msp/sampleconfig/:/etc/hyperledger/msp/orderer
+
+  fabric-dev-peer:
+    container_name: fabric-dev-peer
+    image: blockchain101/fabric-peer:1.0
+    environment:
+      - CORE_LOGGING_LEVEL=INFO
+      - CORE_NEXT=true
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - CORE_PEER_ID=fabric-dev-peer
+      - CORE_PEER_ENDORSER_ENABLED=true
+      - CORE_PEER_LOCALMSPID=DEFAULT
+      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/msp/peer/
+      - CORE_PEER_GOSSIP_ORGLEADER=true
+      - CORE_PEER_ADDRESS=fabric-dev-peer:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=fabric-dev-peer:7051
+      - CORE_PEER_TLS_ENABLED=false
+      - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/msp/peer/keystore/key.pem
+      - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/msp/peer/signcerts/peer.pem
+      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/msp/peer/cacerts/ca-cert.pem
+      # the following setting starts chaincode containers on the same
+      # bridge network as the peers
+      # https://docs.docker.com/compose/networking/
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=dockercomposefiles_default
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric
+    command: peer node start --peer-defaultchain=false
+    ports:
+      - 7051:7051
+      - 7053:7053
+    volumes:
+        - /var/run/:/host/var/run/
+        - ./channel/msp/sampleconfig:/etc/hyperledger/msp/peer
+    depends_on:
+      - fabric-dev-orderer
+
+  fabric-dev-cli:
+    container_name: fabric-dev-cli
+    image: blockchain101/fabric-cli:1.0
+    tty: true
+    environment:
+      - GOPATH=/opt/gopath
+      - CORE_PEER_ADDRESSAUTODETECT=true
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - CORE_LOGGING_LEVEL=INFO
+      - CORE_NEXT=true
+      - CORE_PEER_ID=fabric-dev-cli
+      - CORE_PEER_ENDORSER_ENABLED=true
+      - CORE_PEER_COMMITTER_LEDGER_ORDERER=fabric-dev-orderer:7050
+      - CORE_PEER_ADDRESS=fabric-dev-peer:7051
+      - CORE_PEER_GOSSIP_IGNORESECURITY=true
+      - CORE_PEER_LOCALMSPID=DEFAULT
+      - CORE_PEER_TLS_ENABLED=false
+      - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/msp/peer/signcerts/peer.pem
+      - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/msp/peer/keystore/key.pem
+      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/msp/peer/cacerts/ca-cert.pem
+      # - CORE_PEER_TLS_SERVERHOSTOVERRIDE=fabric-dev-cli
+      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/msp/peer/
+      - PRODUCTION_PATH=/var/hyperledger/production
+  
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/channel
+    command: /bin/bash -c '../peer/scripts/script-${CHANNEL_NAME}.sh ${CHANNEL_NAME} SampleSingleMSPSolo; sleep 1000000'
+    #command: /bin/bash
+    volumes:
+        - /var/run/:/host/var/run/
+        - ./channel/msp/sampleconfig:/etc/hyperledger/msp/peer
+        - ./scripts:/opt/gopath/src/github.com/hyperledger/fabric/peer/scripts/
+        - ./channel:/opt/gopath/src/github.com/hyperledger/fabric/channel
+    depends_on:
+      - fabric-dev-orderer
+      - fabric-dev-peer
