@@ -10,6 +10,10 @@ vp0:
     service: vp-pbft
   container_name: vp0
   hostname: vp0
+  ports:
+    - 6051:7051
+    - 6050:7050
+    - 6053:7053
   environment:
     - CORE_LOGGING_LEVEL=INFO
     - CORE_PEER_ID=vp0
@@ -26,6 +30,10 @@ vp1:
     service: vp-pbft
   container_name: vp1
   hostname: vp1
+  ports:
+    - 5051:7051
+    - 5050:7050
+    - 5053:7053
   environment:
     - CORE_LOGGING_LEVEL=INFO
     - CORE_PEER_ID=vp1
@@ -44,6 +52,10 @@ vp2:
     service: vp-pbft
   container_name: vp2
   hostname: vp2
+  ports:
+    - 4051:7051
+    - 4050:7050
+    - 4053:7053
   environment:
     - CORE_LOGGING_LEVEL=INFO
     - CORE_PEER_ID=vp2
@@ -62,6 +74,10 @@ vp3:
     service: vp-pbft
   container_name: vp3
   hostname: vp3
+  ports:
+    - 3051:7051
+    - 3050:7050
+    - 3053:7053
   environment:
     - CORE_LOGGING_LEVEL=INFO
     - CORE_PEER_ID=vp3

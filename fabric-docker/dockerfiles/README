@@ -3,3 +3,6 @@ docker build -f Dockerfile_baseimage -t hyperledger/fabric-baseimage:latest .
 
 docker build -f Dockerfile_peer -t blockchain101/fabric-peer:0.6.1 .
 docker build -f Dockerfile_membersrvc -t blockchain101/fabric-membersrvc:0.6.1 .
+for blockchain101/fabric-membersrvc we enable membersrvc.yaml aca enabled=true, this is the only difference between the updated one and the original one 
+if not enabled when queryed from hfc got the following error:
+Error: Error:Transaction or query returned with failure: QUERY: Error retrieving caller details: Couldn't get attribute 'role'. Error: Failed retrieving extension.
